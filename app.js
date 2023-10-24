@@ -52,3 +52,17 @@ app.use("/api/v2/message", message);
 app.use( ErrorHandler)
 
 module.exports = app
+
+
+
+ // {
+//     "version": "2",
+//     "name": "multivendor",
+//     "builds": [
+//         {"src": "package.json", "use": "@vercel/node"}
+//     ],
+//     "routes": [
+//         {"src": "/(.*)", "dest": "/server.js"}
+//     ]
+
+// }

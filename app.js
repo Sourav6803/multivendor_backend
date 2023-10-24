@@ -4,6 +4,7 @@ const app = express()
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser')
 const cors = require("cors")
+const path = require('path')
 // const fileUpload = require("express-fileupload")
 
 app.use(express.json())
@@ -59,7 +60,7 @@ module.exports = app
 //     "version": "2",
 //     "name": "multivendor",
 //     "builds": [
-//         {"src": "package.json", "use": "@vercel/node"}
+//         {"src": "server.js", "use": "@vercel/node"}
 //     ],
 //     "routes": [
 //         {"src": "/(.*)", "dest": "/server.js"}

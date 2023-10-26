@@ -10,9 +10,11 @@ const path = require('path')
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: "https://multivendor-frontend-irhh.vercel.app/",
+    origin: ["https://multivendor-frontend-irhh.vercel.app/",],
     credentials: true
 }))
+
+// https://multivendor-frontend-irhh.vercel.app/
 app.use("/", express.static("uploads"))
 app.use(bodyParser.urlencoded({extended: true, limit: "50mb"}))
 app.use("/test", (req, res) => {

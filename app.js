@@ -10,7 +10,7 @@ const path = require('path')
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "https://multivendor-frontend-irhh.vercel.app/",
     credentials: true
 }))
 app.use("/", express.static("uploads"))
@@ -56,14 +56,3 @@ module.exports = app
 
 
 
- // {
-//     "version": "2",
-//     "name": "multivendor",
-//     "builds": [
-//         {"src": "server.js", "use": "@vercel/node"}
-//     ],
-//     "routes": [
-//         {"src": "/(.*)", "dest": "/server.js"}
-//     ]
-
-// }

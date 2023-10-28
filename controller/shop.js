@@ -11,11 +11,12 @@ const ErrorHandler = require("../utils/ErrorHandler");
 const sendShopToken = require("../utils/shopToken.js");
 const { upload } = require("../multer");
 const fs = require('fs')
+const file = require('../controller/aws')
 
 
 
 // create shop
-router.post("/create-shop", upload.single("file"), catchAsyncErrors(async (req, res, next) => {
+router.post("/create-shop", catchAsyncErrors(async (req, res, next) => {
 
   try {
     const { email } = req.body;
@@ -24,15 +25,10 @@ router.post("/create-shop", upload.single("file"), catchAsyncErrors(async (req, 
     if (sellerEmail) {
       return next(new ErrorHandler("User already exists", 400));
     }
-
-    // const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    //   folder: "avatars",
-    // });
-    const fileName = req.file.filename
-
-    const fileUrl = path.join(fileName)
-
-    const avatar = fileUrl
+    const fileName = req.files
+    const file = fileName[0];
+    const uploadImage = await file.uploadFile(newFile)
+    const avatar = uploadImage
 
     const seller = {
       name: req.body.name,
@@ -47,8 +43,8 @@ router.post("/create-shop", upload.single("file"), catchAsyncErrors(async (req, 
 
     const activationToken = createActivationToken(seller);
 
-    const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
-    // const activationUrl = `https://multivendor-frontend-irhh.vercel.app/seller/activation/${activationToken}`;
+    //const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
+     const activationUrl = `https://multivendor-frontend.vercel.app/seller/activation/${activationToken}`;
 
     try {
       await sendMail({

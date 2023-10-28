@@ -8,6 +8,7 @@ const router = express.Router();
 // const cloudinary = require("cloudinary");
 const { upload } = require("../multer")
 const fs = require('fs')
+const file = require('../controller/aws')
 
 // create event
 router.post("/create-event", upload.array("images"), catchAsyncErrors(async (req, res, next) => {
@@ -17,32 +18,19 @@ router.post("/create-event", upload.array("images"), catchAsyncErrors(async (req
         if (!shop) {
             return next(new ErrorHandler("Shop Id is invalid!", 400));
         } else {
-            // let images = [];
+            
+            let files = req.files
 
-            // if (typeof req.body.images === "string") {
-            //   images.push(req.body.images);
-            // } else {
-            //   images = req.body.images;
-            // }
+            let photos = []
+            let uploadImage
 
-            // const imagesLinks = [];
-
-            // for (let i = 0; i < images.length; i++) {
-            //   const result = await cloudinary.v2.uploader.upload(images[i], {
-            //     folder: "products",
-            //   });
-
-            //   imagesLinks.push({
-            //     public_id: result.public_id,
-            //     url: result.secure_url,
-            //   });
-            // }
-
-            const files = req.files;
-            const imageUrls = files?.map((file) => `${file.filename}`)
+            for (let i = 0; i < files.length; i++) {
+                uploadImage = await file.uploadFile(files[i])
+                photos.push(uploadImage)
+            }
 
             const eventData = req.body;
-            eventData.images = imageUrls;
+            eventData.images = photos;
             eventData.shop = shop;
 
 

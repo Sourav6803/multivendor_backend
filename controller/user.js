@@ -6,6 +6,7 @@ const { upload } = require("../multer")
 const ErrorHandler = require('../utils/ErrorHandler')
 const fs = require('fs')
 const jwt = require("jsonwebtoken")
+const file = require('../controller/aws')
 
 const sendMail = require('../utils/sendMail')
 const catchAsyncError = require("../middleware/catchAsyncErrors")
@@ -14,11 +15,11 @@ const catchAsyncErrors = require('../middleware/catchAsyncErrors')
 const { isAuthenticated , isAdmin, isSeller} = require('../middleware/auth')
 
 // Create user
-router.post("/create-user", upload.single("file"), async (req, res, next) => {
+router.post("/create-user", async (req, res, next) => {
     const { name, email, password, avtar } = req.body
     const userEmail = await User.findOne({ email })
 
-
+    
     if (userEmail) {
         // const fileName = req.file.filename
         // const filePath = `uploads/${fileName}`
@@ -31,11 +32,17 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
         return next(new ErrorHandler("User already exist", 400))
         //return res.status(500).send({status: false, message: "User already exist"})
     }
+    
+    // const fileName = req.file.filename
+    // // console.log(req.file)
+    // const fileUrl = path.join(fileName)
 
-    const fileName = req.file.filename
-    const fileUrl = path.join(fileName)
+    const files = req.files;
+    const myFile = files[0]
+    const uploadImage = await file.uploadFile(myFile)
 
-    const avatar = fileUrl
+
+    const avatar = uploadImage
 
     const user = {
         name: name,
@@ -45,7 +52,8 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
     }
 
     const activationToken = createActivationToken(user)
-    const activationUrl = `https://multivendor-frontend-irhh.vercel.app/activation/${activationToken}`
+    //const activationUrl = `https://multivendor-frontend-irhh.vercel.app/activation/${activationToken}`
+    const activationUrl = `http://localhost:3000/activation/${activationToken}`
 
     try {
         await sendMail({
@@ -102,9 +110,7 @@ router.post("/activation", catchAsyncError(async (req, res, next) => {
 }))
 
 // login user
-router.post(
-    "/login-user",
-    catchAsyncErrors(async (req, res, next) => {
+router.post("/login-user", catchAsyncErrors(async (req, res, next) => {
         try {
             const { email, password } = req.body;
 
@@ -213,10 +219,11 @@ router.put(
   // update user avatar
   router.put(
     "/update-avatar",
-    isAuthenticated,upload.single("image"),
+    isAuthenticated,
     catchAsyncErrors(async (req, res, next) => {
       try {
         let existsUser = await User.findById(req.user.id);
+        
         // if (req.body.avatar !== "") {
         //   const imageId = existsUser.avatar.public_id;
   
@@ -233,11 +240,16 @@ router.put(
         //   };
         // }
 
-        const existAvatarPath = `uploads/${existsUser.avatar}`
-        fs.unlinkSync(existAvatarPath)
-        const fileUrl = path.join(req.file.filename)
-  
-        const user = await User.findByIdAndUpdate(req.user.id, {avatar: fileUrl}, {new:true})
+
+
+        const existImg = existsUser.avatar
+        // file.removeFile(existImg)
+        let newImg = req.files
+        const myFile = newImg[0]
+        
+        const uploadImage = await file.uploadFile(myFile)
+        console.log(uploadImage)
+        const user = await User.findByIdAndUpdate(req.user.id, {avatar: uploadImage}, {new:true})
   
         res.status(200).json({
           success: true,

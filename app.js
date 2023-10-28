@@ -5,12 +5,14 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser')
 const cors = require("cors")
 const path = require('path')
+const multer = require("multer")
 // const fileUpload = require("express-fileupload")
 
 app.use(express.json())
 app.use(cookieParser())
+app.use( multer().any())
 app.use(cors({
-    origin: ["https://multivendor-frontend-irhh.vercel.app/",],
+    origin: ['https://multivendor-frontend.vercel.app'],
     credentials: true
 }))
 

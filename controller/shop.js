@@ -26,8 +26,8 @@ router.post("/create-shop", catchAsyncErrors(async (req, res, next) => {
       return next(new ErrorHandler("User already exists", 400));
     }
     const fileName = req.files
-    const file = fileName[0];
-    const uploadImage = await file.uploadFile(newFile)
+    const files = fileName[0];
+    const uploadImage = await file.uploadFile(files)
     const avatar = uploadImage
 
     const seller = {

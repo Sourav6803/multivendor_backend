@@ -12,6 +12,7 @@ const sendShopToken = require("../utils/shopToken.js");
 const { upload } = require("../multer");
 const file = require('../controller/aws')
 const fs = require('fs')
+const file = require('../controller/aws')
 
 
 
@@ -25,10 +26,6 @@ router.post("/create-shop", catchAsyncErrors(async (req, res, next) => {
     if (sellerEmail) {
       return next(new ErrorHandler("User already exists", 400));
     }
-
-    // const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    //   folder: "avatars",
-    // });
     const img = req.files
     const myFile = img[0]
 
@@ -48,8 +45,8 @@ router.post("/create-shop", catchAsyncErrors(async (req, res, next) => {
 
     const activationToken = createActivationToken(seller);
 
-    const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
-    // const activationUrl = `https://multivendor-frontend-irhh.vercel.app/seller/activation/${activationToken}`;
+    //const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
+     const activationUrl = `https://multivendor-frontend.vercel.app/seller/activation/${activationToken}`;
 
     try {
       await sendMail({

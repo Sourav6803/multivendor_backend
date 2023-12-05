@@ -18,7 +18,7 @@ module.exports = (err,req,res,next)=>{
 
     // wrong jwt error
     if(err.name === "JsonWebTokenError"){
-        const message = `Your url is invalid please try again letter`;
+        const message = `Your URL is invalid please try again letter`;
         err = new ErrorHandler(message, 400);
     }
 

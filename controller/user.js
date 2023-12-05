@@ -32,10 +32,7 @@ router.post("/create-user", async (req, res, next) => {
         return next(new ErrorHandler("User already exist", 400))
         //return res.status(500).send({status: false, message: "User already exist"})
     }
-    
-    // const fileName = req.file.filename
-    // // console.log(req.file)
-    // const fileUrl = path.join(fileName)
+  
 
     const files = req.files;
     const myFile = files[0]
@@ -52,8 +49,8 @@ router.post("/create-user", async (req, res, next) => {
     }
 
     const activationToken = createActivationToken(user)
-    //const activationUrl = `https://multivendor-frontend-irhh.vercel.app/activation/${activationToken}`
-    const activationUrl = `http://localhost:3000/activation/${activationToken}`
+    const activationUrl = `https://multivendor-frontend.vercel.app/activation/${activationToken}`
+    // const activationUrl = `http://localhost:3000/activation/${activationToken}`
 
     try {
         await sendMail({
@@ -248,7 +245,7 @@ router.put(
         const myFile = newImg[0]
         
         const uploadImage = await file.uploadFile(myFile)
-        console.log(uploadImage)
+        
         const user = await User.findByIdAndUpdate(req.user.id, {avatar: uploadImage}, {new:true})
   
         res.status(200).json({

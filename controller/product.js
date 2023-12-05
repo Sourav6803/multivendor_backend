@@ -11,12 +11,27 @@ const { upload } = require("../multer")
 const fs = require("fs")
 const file = require('../controller/aws')
 
+
+router.post("/upload", catchAsyncErrors(async (req, res, next) => {
+  let files = req.files
+
+  let photos = []
+  let uploadImage
+
+  for (let i = 0; i < files.length; i++) {
+    uploadImage = await file.uploadFile(files[i])
+    photos.push(uploadImage)
+  }
+  res.send({msg: "Succes", url: photos})
+}
+))
+
 // create product
-router.post("/create-product",  catchAsyncErrors(async (req, res, next) => {
+router.post("/create-product", catchAsyncErrors(async (req, res, next) => {
   try {
     const shopId = req.body.shopId;
     const shop = await Shop.findById(shopId);
-    
+
     if (!shop) {
       return next(new ErrorHandler("Shop Id is invalid!", 400));
     } else {
@@ -119,7 +134,92 @@ router.delete("/delete-shop-product/:id", isSeller, catchAsyncErrors(async (req,
 })
 );
 
+router.get("/getProductBySubCAtegory", catchAsyncErrors(async (req, res, next) => {
+  try {
+    const data = req.query
 
+
+    if (Object.keys(data).length == 0) {
+      const allProducts = await Product.find({})
+      if (allProducts.length == 0) {
+        return res.status(404).send({ status: false, message: "No products found" })
+      }
+      return res.status(200).send({ status: true, message: "products fetched successfully", data: allProducts })
+
+    } else {
+      let subCategory = req.query.subCategory
+      let tags = req.query.tags
+      let priceGreaterThan = req.query.priceGreaterThan
+      let priceLessThan = req.query.priceLessThan
+
+
+      let filter = {}
+
+      if (subCategory != null) {
+        //if (!/^[a-zA-Z0-9]{1,30}$/.test(name)) return res.status(400).send({ status: false, message: "name should contain only alphabets" })
+        filter.subCategory = { $regex: subCategory, $options: "i" }
+
+      }
+
+      if (tags != null) {
+        //if (!/^[a-zA-Z0-9]{1,30}$/.test(name)) return res.status(400).send({ status: false, message: "name should contain only alphabets" })
+        filter.tags = { $regex: tags, $options: "i" }
+
+      }
+
+      if (priceGreaterThan != null) {
+        if (!/^[+]?([0-9]+\.?[0-9]*|\.[0-9]+)$/.test(priceGreaterThan)) return res.status(400).send({ status: false, message: "price filter should be a vaid number" })
+        filter.price = { $gt: `${priceGreaterThan}` }
+      }
+
+      if (priceLessThan != null) {
+        if (!/^[+]?([0-9]+\.?[0-9]*|\.[0-9]+)$/.test(priceLessThan)) {
+          return res.status(400).send({ status: false, message: "price filter should be a vaid number" })
+        }
+        filter.price = { $lt: `${priceLessThan}` }
+      }
+
+
+      //sorting
+      if (req.query.priceSort != null) {
+        if ((req.query.priceSort != 1 && req.query.priceSort != -1)) {
+          return res.status(400).send({ status: false, message: 'use 1 for low to high and use -1 for high to low' })
+        }
+      }
+
+      if (!priceGreaterThan && !priceLessThan) {
+        const productList = await Product.find(filter).sort({ price: req.query.priceSort })
+        if (productList.length == 0) {
+          return res.status(404).send({ status: false, message: "No products available" })
+        }
+        return res.status(200).send({ status: true, message: "Products list", data: productList })
+      }
+
+      if (priceGreaterThan && priceLessThan) {
+        const productList = await Product.find({
+          $and: [filter, { price: { $gt: priceGreaterThan } }, {
+            price: { $lt: priceLessThan }
+          }]
+        }).sort({ price: req.query.priceSort })
+        if (productList.length == 0) {
+          return res.status(404).send({ status: false, message: "No available products" })
+        }
+        return res.status(200).send({ status: true, message: "Products list", data: productList })
+      }
+
+      if (priceGreaterThan || priceLessThan) {
+        const productList = await Product.find(filter).sort({ price: req.query.priceSort })
+        if (productList.length == 0) {
+          return res.status(404).send({ status: false, message: "No available products" })
+        }
+        return res.status(200).send({ status: true, message: "Products list", data: productList })
+      }
+    }
+  }
+  catch (err) {
+    return next(new ErrorHandler(err, 400));
+  }
+}))
 
 // get all products
 router.get("/get-all-products", catchAsyncErrors(async (req, res, next) => {

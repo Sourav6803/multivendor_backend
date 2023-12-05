@@ -41,15 +41,15 @@ const uploadFile = async (file) => {
         var uploadParams = {
             ACL: "public-read",
             Bucket: "sourav-ekart",
-            Key: "abc/" + file.originalname,
-            Body: file.buffer
+            Key: "abc/" + file?.originalname,
+            Body: file?.buffer
         }
         s3.upload(uploadParams, function (err, data) {
             if (err) {
                 return reject({ "error": err })
             }
             console.log("File uploaded succesfully")
-            return resolve(data.Location)
+            return resolve(data?.Location)
         })
 
     })

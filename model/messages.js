@@ -11,14 +11,9 @@ const messagesSchema = new mongoose.Schema(
     sender: {
       type: String,
     },
-    images: {
-      public_id: {
-        type: String,
-      },
-      url: {
-        type: String,
-      },
-    },
+    type: {
+      type: String,
+    }
   },
   { timestamps: true }
 );

@@ -13,6 +13,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter your product category!"],
   },
+  subCategory: {
+    type: String,
+    // required: [true, "Please enter your product Sub category!"],
+  },
   tags: {
     type: String,
   },
@@ -22,6 +26,10 @@ const productSchema = new mongoose.Schema({
   discountPrice: {
     type: Number,
     required: [true, "Please enter your product price!"],
+  },
+  customize: {
+    type: Boolean,
+    required: true
   },
   discountPercentage: {
     type: Number,

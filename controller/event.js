@@ -11,7 +11,7 @@ const fs = require('fs')
 const file = require('../controller/aws')
 
 // create event
-router.post("/create-event", upload.array("images"), catchAsyncErrors(async (req, res, next) => {
+router.post("/create-event",  catchAsyncErrors(async (req, res, next) => {
     try {
         const shopId = req.body.shopId;
         const shop = await Shop.findById(shopId);

@@ -16,15 +16,15 @@ router.post(
 
       if (isConversationExist) {
         const conversation = isConversationExist;
-        res.status(201).json({
-          success: true,
-          conversation,
-        });
+        res.status(201).json(
+          "Already exist",
+        );
       } else {
         const conversation = await Conversation.create({
           members: [userId, sellerId],
           groupTitle: groupTitle,
         });
+        console.log(conversation)
 
         res.status(201).json({
           success: true,

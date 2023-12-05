@@ -10,12 +10,13 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 const sendShopToken = require("../utils/shopToken.js");
 const { upload } = require("../multer");
+const file = require('../controller/aws')
 const fs = require('fs')
 
 
 
 // create shop
-router.post("/create-shop", upload.single("file"), catchAsyncErrors(async (req, res, next) => {
+router.post("/create-shop", catchAsyncErrors(async (req, res, next) => {
 
   try {
     const { email } = req.body;
@@ -28,11 +29,11 @@ router.post("/create-shop", upload.single("file"), catchAsyncErrors(async (req, 
     // const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
     //   folder: "avatars",
     // });
-    const fileName = req.file.filename
+    const img = req.files
+    const myFile = img[0]
 
-    const fileUrl = path.join(fileName)
-
-    const avatar = fileUrl
+    const uploadImage = await file.uploadFile(myFile)
+    const avatar = uploadImage
 
     const seller = {
       name: req.body.name,
@@ -215,15 +216,16 @@ router.put(
     try {
       let existsSeller = await Shop.findById(req.seller._id);
 
-      const file = req.files
-      const myFile = newImg[0]
-        
+      const img = req.files
+      const myFile = img[0]
+      console.log(img)
+
       const uploadImage = await file.uploadFile(myFile)
 
-      
+
 
       // fs.unlinkSync(existAvatarPath)
-     
+
       const user = await Shop.findByIdAndUpdate(req.seller._id, {
         avatar: uploadImage
       })

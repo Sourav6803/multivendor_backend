@@ -20,7 +20,7 @@ app.use( multer().any())
 // app.use(cors(corsOptions));
 
 app.use(cors({
-    origin: ['https://multivendor-frontend.vercel.app','https://jade-moxie-7c7863.netlify.app'],
+    origin: ['https://multivendor-frontend.vercel.app','https://jamalpurbazaarsourav.netlify.app/'],
     credentials: true
 }))
 

@@ -20,7 +20,7 @@ app.use( multer().any())
 // app.use(cors(corsOptions));
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: ['https://multivendor-frontend.vercel.app','https://jamalpurbazaarsourav.netlify.app/'],
     credentials: true
 }))
 // ['https://multivendor-frontend.vercel.app','https://jamalpurbazaarsourav.netlify.app/']

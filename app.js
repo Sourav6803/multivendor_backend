@@ -20,10 +20,10 @@ app.use( multer().any())
 // app.use(cors(corsOptions));
 
 app.use(cors({
-    origin: ['https://multivendor-frontend.vercel.app','https://jamalpurbazaarsourav.netlify.app/'],
+    origin: 'http://localhost:3000',
     credentials: true
 }))
-
+// ['https://multivendor-frontend.vercel.app','https://jamalpurbazaarsourav.netlify.app/']
 // ['https://multivendor-frontend.vercel.app']
 // https://multivendor-frontend-irhh.vercel.app/
 app.use("/", express.static("uploads"))

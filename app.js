@@ -12,17 +12,17 @@ app.use(express.json())
 app.use(cookieParser())
 app.use( multer().any())
 
-const corsOptions ={
-    origin:'https://multivendor-frontend.vercel.app/', 
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200
-}
-app.use(cors(corsOptions));
+// const corsOptions ={
+//     origin:'https://multivendor-frontend.vercel.app/', 
+//     credentials:true,            //access-control-allow-credentials:true
+//     optionSuccessStatus:200
+// }
+// app.use(cors(corsOptions));
 
-// app.use(cors({
-//     origin: 'http://localhost:3000/',
-//     credentials: true
-// }))
+app.use(cors({
+    origin: 'https://multivendor-frontend.vercel.app/',
+    credentials: true
+}))
 
 // ['https://multivendor-frontend.vercel.app']
 // https://multivendor-frontend-irhh.vercel.app/

@@ -20,7 +20,7 @@ app.use( multer().any())
 // app.use(cors(corsOptions));
 
 app.use(cors({
-    origin: 'https://multivendor-frontend.vercel.app/',
+    origin: 'https://multivendor-frontend.vercel.app',
     credentials: true
 }))
 
